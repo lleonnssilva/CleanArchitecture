@@ -1,0 +1,4 @@
+https://www.youtube.com/watch?v=QxvN-eOZN8k&t=591s
+
+dotnet ef migrations add inicial1 --project CleanArchitecture.Infrastructure -s CleanArchitecture.Api -c AppDbContext --verbose
+dotnet ef database update inicial1 --project CleanArchitecture.Infrastructure -s CleanArchitecture.Api -c AppDbContext --verbose
