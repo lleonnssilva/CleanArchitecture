@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using CleanArchitecture.Application.DTOS;
+using CleanArchitecture.Application.Events;
 using CleanArchitecture.Application.Interfaces;
 using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Domain.Events;
 using CleanArchitecture.Domain.Interfaces.Repositories;
 
 namespace CleanArchitecture.Application.Services
@@ -10,12 +12,13 @@ namespace CleanArchitecture.Application.Services
     {
         private readonly IClienteRepository _repository;
         private readonly IMapper _mapper;
-       
-        public ClienteService(IClienteRepository repository, IMapper mapper)
+        private readonly IEventPublisher _eventPublisher;
+
+        public ClienteService(IClienteRepository repository, IMapper mapper, IEventPublisher eventPublisher)
         {
             _repository = repository;
             _mapper = mapper;
-         
+            _eventPublisher = eventPublisher;
         }
 
         public async Task<IEnumerable<ClienteDTO>> GetAllsync()
@@ -33,14 +36,19 @@ namespace CleanArchitecture.Application.Services
         {
 
             var clienteMap = _mapper.Map<Cliente>(cliente);
-            await _repository.AddAsync(clienteMap);
+
             
+
+            await _repository.AddAsync(clienteMap);
+
+            var evento = new ClienteCadastradoEvent(clienteMap);
+            _eventPublisher.Publicar(evento);
+
         }
 
         public async Task DeleteAsync(Guid id)
         {
             await _repository.DeleteAsync(id);
         }
-
     }
 }

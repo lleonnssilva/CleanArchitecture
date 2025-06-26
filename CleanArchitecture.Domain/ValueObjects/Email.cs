@@ -16,6 +16,10 @@
             if (String.IsNullOrEmpty(endereco))
                 throw new Exception("Email invalido");
         }
+        public override string ToString()
+        {
+            return Endereco;
+        }
     }
 
 }

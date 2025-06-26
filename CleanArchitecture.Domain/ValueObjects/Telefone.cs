@@ -1,4 +1,6 @@
-﻿namespace CleanArchitecture.Domain.ValueObjects
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace CleanArchitecture.Domain.ValueObjects
 {
     public class Telefone
     {
@@ -15,11 +17,15 @@
 
         private void Validate(string ddd,string telefone)
         {
-            if (String.IsNullOrEmpty(ddd))
+            if (string.IsNullOrEmpty(ddd))
                 throw new Exception("DDD invalido");
 
-            if (String.IsNullOrEmpty(telefone))
+            if (string.IsNullOrEmpty(telefone))
                 throw new Exception("Telefone invalido");
+        }
+        public override string ToString()
+        {
+            return NumeroTelefone;
         }
     }
 }

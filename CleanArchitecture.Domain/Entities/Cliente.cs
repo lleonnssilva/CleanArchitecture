@@ -9,6 +9,7 @@ namespace CleanArchitecture.Domain.Entities
         public Telefone Telefone { get; private set; }
         public Email EnderecoEmail { get; private  set; }
         public  Endereco Endereco { get; private set; }
+
         protected Cliente() { }
         public Cliente(string nome,Telefone telefone, Email enderecoEmail, Endereco endereco)
         {
@@ -23,6 +24,7 @@ namespace CleanArchitecture.Domain.Entities
             if (String.IsNullOrEmpty(nome))
                 throw new Exception("Nome invalido");
         }
+       
         //public string GetNome()
         //{
         //    return this._nome;
