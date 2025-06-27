@@ -11,13 +11,17 @@ namespace CleanArchitecture.Infrastructure
 {
     public static class ServiceInfrastructureExtensions
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services,string connectionString)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services,string connectionString,string redisConnection)
         {
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
             services.AddScoped<IEventPublisher, EventPublisher>();
             services.AddScoped<IClienteRepository, ClienteRepository>();
             services.AddScoped<IRabbitMQProducer, Events.RabbitMQProducer>();
-           
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnection;
+            });
+
             return services;
         }
     }
