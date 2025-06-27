@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.Execution;
 using CleanArchitecture.Application.DTOS;
 using CleanArchitecture.Application.Interfaces;
 using CleanArchitecture.Domain.Entities;

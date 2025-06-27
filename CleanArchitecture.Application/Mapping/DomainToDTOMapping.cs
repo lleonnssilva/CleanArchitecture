@@ -14,7 +14,6 @@ namespace CleanArchitecture.Application.Mapping
                 .ReverseMap();
 
             CreateMap<Endereco, EnderecoDTO>().ReverseMap();
-            //CreateMap<ContatoDTO, Contato>().ReverseMap();
         }
     }
 }

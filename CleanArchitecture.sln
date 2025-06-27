@@ -16,6 +16,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Api", "CleanArchitecture.Api\CleanArchitecture.Api.csproj", "{A916F323-32AF-5A35-9C2B-B5A43D4F43F4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{503B382A-52A6-4983-9F97-7A25025FA060}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{7BCE4919-8F5C-4B7F-8904-26E7D5B7F2D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +47,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5E7F6AE3-C19B-485A-815A-2A347B3F71BD} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{0F01A91B-D7EA-4139-8E81-5BA8DB107DBD} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{5BA714CD-B861-4F23-8ECB-55D8A518CB7F} = {7BCE4919-8F5C-4B7F-8904-26E7D5B7F2D3}
+		{A916F323-32AF-5A35-9C2B-B5A43D4F43F4} = {503B382A-52A6-4983-9F97-7A25025FA060}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D316BDB2-315D-480E-817E-9E80CD3E4DC0}
