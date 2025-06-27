@@ -1,10 +1,8 @@
-﻿using CleanArchitecture.Application.RabbitMQ;
-using CleanArchitecture.Domain.Events;
+﻿using CleanArchitecture.Domain.Events;
+using CleanArchitecture.Domain.Interfaces.RabbitMQ;
 using Newtonsoft.Json;
-using RabbitMQ.Client;
-using System.Text;
 
-namespace CleanArchitecture.Application.Events
+namespace CleanArchitecture.Infrastructure.Events
 {
     public class EventPublisher : IEventPublisher
     {
@@ -23,7 +21,6 @@ namespace CleanArchitecture.Application.Events
 
             _rabitMQProducer.SendMessage(evento, evento.GetType().Name);
             Console.WriteLine($"Evento publicado: {jsonEvento}");
-            }
         }
     }
-
+}

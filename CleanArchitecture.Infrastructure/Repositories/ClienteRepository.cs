@@ -22,10 +22,12 @@ namespace CleanArchitecture.Infrastructure.Repositories
 
         public async Task DeleteAsync(Guid id)
         {
-            var member = await GetByIdAsync(id);
-
-            _dbContext.Remove(member);
-            _dbContext.SaveChanges();
+            var cliente = await GetByIdAsync(id);
+            if (cliente != null)
+            {
+                _dbContext.Clientes.Remove(cliente);
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
         public async Task<IEnumerable<Cliente>> GetAllsync()
@@ -35,9 +37,14 @@ namespace CleanArchitecture.Infrastructure.Repositories
 
         public async Task<Cliente> GetByIdAsync(Guid id)
         {
-            var cliente = await _dbContext.Clientes.FindAsync(id);
+            return await _dbContext.Clientes.FindAsync(id);
+        }
 
-            return cliente;
+        public async Task UpdateAsync(Cliente cliente)
+        {
+             _dbContext.Clientes.Update(cliente);
+            _dbContext.SaveChanges();
+
         }
     }
 }

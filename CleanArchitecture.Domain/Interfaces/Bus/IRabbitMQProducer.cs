@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Application.RabbitMQ
+﻿namespace CleanArchitecture.Domain.Interfaces.RabbitMQ
 {
     public interface IRabbitMQProducer
     {

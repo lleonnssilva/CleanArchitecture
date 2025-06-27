@@ -6,7 +6,8 @@ namespace CleanArchitecture.Domain.Interfaces.Repositories
     {
         Task<IEnumerable<Cliente>> GetAllsync();
         Task<Cliente> GetByIdAsync(Guid id);
-        Task AddAsync(Cliente accountPlain);
+        Task AddAsync(Cliente cliente);
         Task DeleteAsync(Guid id);
+        Task UpdateAsync(Cliente cliente);
     }
 }

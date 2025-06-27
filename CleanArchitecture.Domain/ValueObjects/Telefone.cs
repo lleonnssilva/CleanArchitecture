@@ -1,6 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace CleanArchitecture.Domain.ValueObjects
+﻿namespace CleanArchitecture.Domain.ValueObjects
 {
     public class Telefone
     {

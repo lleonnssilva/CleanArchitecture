@@ -1,42 +1,30 @@
-using CleanArchitecture.Application.Events;
-using CleanArchitecture.Application.Interfaces;
+using CleanArchitecture.Application;
 using CleanArchitecture.Application.Mapping;
-using CleanArchitecture.Application.RabbitMQ;
-using CleanArchitecture.Application.Services;
-using CleanArchitecture.Domain.Events;
-using CleanArchitecture.Domain.Interfaces.Repositories;
-using CleanArchitecture.Infrastructure.Context;
-using CleanArchitecture.Infrastructure.Repositories;
+using CleanArchitecture.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-
-// Registrar o manipulador de eventos
-builder.Services.AddScoped<IEventPublisher, EventPublisher>();
-
-builder.Services.AddAutoMapper(typeof(DomainToDTOMapping));
-builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
-builder.Services.AddScoped<IClienteService, ClienteService>();
-builder.Services.AddScoped<IRabbitMQProducer, RabbitMQProducer>();
-
-//builder.Services.AddMediatR(cfg => {
-//    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-//});
-//builder.Services.AddValidatorsFromAssemblyContaining<CreatePlanValidator>();
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+//builder.Services.AddScoped<IEventPublisher, EventPublisher>();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddAutoMapper(typeof(DomainToDTOMapping));
+builder.Services.AddInfrastructure(connectionString);
+builder.Services.AddApplicationService();
+
+
+
+
+
+
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//    options.UseSqlServer(connectionString));
 
 
 var app = builder.Build();

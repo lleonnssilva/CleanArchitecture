@@ -1,12 +1,13 @@
-﻿using RabbitMQ.Client;
+﻿using CleanArchitecture.Domain.Interfaces.RabbitMQ;
+using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
 
-namespace CleanArchitecture.Application.RabbitMQ
+namespace CleanArchitecture.Infrastructure.RabbitMQ
 {
     public class RabbitMQProducer : IRabbitMQProducer
     {
-        public void SendMessage<T>(T message,string tipo)
+        public void SendMessage<T>(T message, string tipo)
         {
 
             var factory = new ConnectionFactory

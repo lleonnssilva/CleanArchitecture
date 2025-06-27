@@ -2,18 +2,22 @@
 
 namespace CleanArchitecture.Domain.Entities
 {
+
+    
     public class Cliente : BaseEntity
     {
 
         public string Nome { get; private set; }
         public Telefone Telefone { get; private set; }
-        public Email EnderecoEmail { get; private  set; }
-        public  Endereco Endereco { get; private set; }
+        public Email EnderecoEmail { get; private set; }
+        public Endereco Endereco { get; private set; }
 
         protected Cliente() { }
-        public Cliente(string nome,Telefone telefone, Email enderecoEmail, Endereco endereco)
+        public Cliente(string nome, Telefone telefone, Email enderecoEmail, Endereco endereco)
         {
             this.Validate(nome);
+            DataAtualizacao = DateTime.Now;
+            DataCriacao = DateTime.Now;
             this.Nome = nome;
             this.Telefone = telefone;
             this.EnderecoEmail = enderecoEmail;
@@ -22,32 +26,33 @@ namespace CleanArchitecture.Domain.Entities
         private void Validate(string nome)
         {
             if (String.IsNullOrEmpty(nome))
-                throw new Exception("Nome invalido");
+                throw new ArgumentException("Nome invalido.");
+            if (nome.Length < 5)
+                throw new ArgumentException("Nome precisa ter pelo menos 5 caracteres.");
+            if (nome.Length > 200)
+                throw new ArgumentException("Nome pode ter no máximo 200 caracteres.");
         }
-       
-        //public string GetNome()
-        //{
-        //    return this._nome;
-        //}
-        //public string GetEmail()
-        //{
-        //    return this._contato.GetEmail();
-        //}
-        //public string GetTelefone()
-        //{
-        //    return this._contato.GetTelefone();
-        //}
-        //public string GetEnderecoFormatado()
-        //{
-        //    var endereco = String.Format("Logradouro:{0}\nBairro: {1}\nNúmero: {2}\nCidade: {3}\nMunicipio: {4}\nEstado: {5}",
-        //        this._endereco.GetRua(),
-        //        this._endereco.GetBairro(),
-        //        this._endereco.GetNumero(),
-        //        this._endereco.GetCidade(),
-        //        this._endereco.GetMunicipio(),
-        //        this._endereco.GetEstado());
-        //    return endereco;
-        //}
+
+
+        public string GetEmail()
+        {
+            return this.EnderecoEmail.Endereco.ToString();
+        }
+        public string GetTelefone()
+        {
+            return this.Telefone.DDD.ToString() + this.Telefone.NumeroTelefone.ToString();
+        }
+        public string GetEnderecoFormatado()
+        {
+            var endereco = String.Format("Logradouro:{0}\nBairro: {1}\nNúmero: {2}\nCidade: {3}\nMunicipio: {4}\nEstado: {5}",
+                this.Endereco.Rua.ToString(),
+                this.Endereco.Bairro.ToString(),
+                this.Endereco.Numero.ToString(),
+                this.Endereco.Cidade.ToString(),
+                this.Endereco.Estado.ToString(),
+                this.Endereco.Cep.ToString());
+            return endereco;
+        }
 
     }
 }

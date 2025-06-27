@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using CleanArchitecture.Application.DTOS;
-using CleanArchitecture.Application.Events;
 using CleanArchitecture.Application.Interfaces;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Events;
@@ -34,11 +33,7 @@ namespace CleanArchitecture.Application.Services
         }
         public async Task AddAsync(ClienteDTO cliente)
         {
-
             var clienteMap = _mapper.Map<Cliente>(cliente);
-
-            
-
             await _repository.AddAsync(clienteMap);
 
             var evento = new ClienteCadastradoEvent(clienteMap);
@@ -49,6 +44,12 @@ namespace CleanArchitecture.Application.Services
         public async Task DeleteAsync(Guid id)
         {
             await _repository.DeleteAsync(id);
+        }
+
+        public async Task UpdateAsync(ClienteDTO cliente)
+        {
+            var clienteMap = _mapper.Map<Cliente>(cliente);
+            await _repository.UpdateAsync(clienteMap);
         }
     }
 }

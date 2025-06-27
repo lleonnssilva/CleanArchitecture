@@ -6,7 +6,8 @@ namespace CleanArchitecture.Application.Interfaces
     {
         Task<IEnumerable<ClienteDTO>> GetAllsync();
         Task<ClienteDTO> GetByIdAsync(Guid id);
-        Task AddAsync(ClienteDTO product);
+        Task AddAsync(ClienteDTO cliente);
         Task DeleteAsync(Guid id);
+        Task UpdateAsync(ClienteDTO cliente);
     }
 }

@@ -26,23 +26,42 @@ namespace CleanArchitecture.Api.Controllers
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             var cliente = await _clienteService.GetByIdAsync(id);
-            return cliente != null ? Ok(cliente) : NotFound("cliente não encontrado.");
+            if (cliente == null)
+                return NotFound();
+
+            return Ok(cliente);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddAsync(ClienteDTO cliente)
         {
+            cliente.Id = Guid.NewGuid();
+            if (cliente == null)
+                return BadRequest();
+
             await _clienteService.AddAsync(cliente);
-            return Ok();
+            return Created("Sucesso", null);
+
         }
-
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
+            if (id == Guid.Empty)
+                return BadRequest();
+
             await _clienteService.DeleteAsync(id);
-            return  Ok();
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateAsync(Guid id, ClienteDTO cliente)
+        {
+            if (id == Guid.Empty || cliente == null || id != cliente.Id)
+                return BadRequest();
+
+            await _clienteService.UpdateAsync(cliente);
+            return NoContent();
         }
     }
 }
