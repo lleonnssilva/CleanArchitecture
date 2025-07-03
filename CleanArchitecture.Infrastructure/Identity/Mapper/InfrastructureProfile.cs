@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using CleanArchitecture.Application.DTOS.User;
 using CleanArchitecture.Infrastructure.Identity.Models;
-using Core.Application.DTOs;
 
 namespace CleanArchitecture.Infrastructure.Identity.Mapper
 {

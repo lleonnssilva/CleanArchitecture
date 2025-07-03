@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
+using CleanArchitecture.Application.DTOS.Auth;
+using CleanArchitecture.Application.DTOS.User;
 using CleanArchitecture.Application.Interfaces.Identity;
 using CleanArchitecture.Infrastructure.Identity.Helpers;
 using CleanArchitecture.Infrastructure.Identity.Models;
-using Core.Application.DTOs;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 

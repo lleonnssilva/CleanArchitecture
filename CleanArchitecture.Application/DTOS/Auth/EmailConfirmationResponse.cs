@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Core.Application.DTOs
+namespace CleanArchitecture.Application.DTOS.Auth
 {
-    public class EmailConfirmationRequest
+    public class TokenResponse : AuthenticationResponse
     {
         [JsonPropertyName("userId")]
         public string UserId { get; set; }

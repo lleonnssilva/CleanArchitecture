@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CleanArchitecture.Application.DTOS;
+using CleanArchitecture.Application.DTOS.Cliente;
 using CleanArchitecture.Application.Interfaces;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Events;
@@ -15,15 +15,15 @@ namespace CleanArchitecture.Application.Services
     {
         private readonly IClienteRepository _repository;
         private readonly IMapper _mapper;
-        private readonly IEventPublisher _eventPublisher;
-        private readonly IDistributedCache _redisCache;
+        private readonly IEventPublisher _events;
+        private readonly IDistributedCache _redis;
       
-        public ClienteService(IClienteRepository repository, IMapper mapper, IEventPublisher eventPublisher, IDistributedCache redisCache)
+        public ClienteService(IClienteRepository repository, IMapper mapper, IEventPublisher events, IDistributedCache redis)
         {
             _repository = repository;
             _mapper = mapper;
-            _eventPublisher = eventPublisher;
-            _redisCache = redisCache;
+            _events = events;
+            _redis = redis;
 
         }
 
@@ -36,23 +36,23 @@ namespace CleanArchitecture.Application.Services
 
         public async Task<ClienteDTO> GetByIdAsync(Guid id)
         {
-            var cliente = await _redisCache.GetStringAsync($"{id}");
+            var cliente = await _redis.GetStringAsync($"{id}");
 
 
             if (string.IsNullOrEmpty(cliente))
             {
-                var memberFromDb = await _repository.GetByIdAsync(id);
+                var clienteFromDb = await _repository.GetByIdAsync(id);
 
-                if (memberFromDb != null)
+                if (clienteFromDb != null)
                 {
-                    var memberJson = JsonSerializer.Serialize(memberFromDb);
-                    await _redisCache.SetStringAsync($"{id}", memberJson,
+                    var clienteJson = JsonSerializer.Serialize(clienteFromDb);
+                    await _redis.SetStringAsync($"{id}", clienteJson,
                         options: new DistributedCacheEntryOptions
                         {
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
                         });
                 }
-                return _mapper.Map<ClienteDTO>(memberFromDb);
+                return _mapper.Map<ClienteDTO>(clienteFromDb);
                  
             }
 
@@ -61,8 +61,8 @@ namespace CleanArchitecture.Application.Services
 
             if (clienteCache == null)
             {
-                var memberFromDb = await _repository.GetByIdAsync(id);
-                return _mapper.Map<ClienteDTO>(memberFromDb);
+                var clienteFromDb = await _repository.GetByIdAsync(id);
+                return _mapper.Map<ClienteDTO>(clienteFromDb);
             }
 
             return _mapper.Map<ClienteDTO>(clienteCache);
@@ -74,9 +74,10 @@ namespace CleanArchitecture.Application.Services
                 var clienteMap = _mapper.Map<Cliente>(cliente);
                 await _repository.AddAsync(clienteMap);
 
-                var evento = new ClienteCadastradoEvent(clienteMap);
-                _eventPublisher.Publish(evento);
-                await _redisCache.SetStringAsync($"{clienteMap.Id}", JsonSerializer.Serialize(clienteMap));
+                var clienteCadastradoEvent = new ClienteCadastradoEvent(clienteMap);
+                _events.Publish(clienteCadastradoEvent);
+
+                await _redis.SetStringAsync($"{clienteMap.Id}", JsonSerializer.Serialize(clienteMap));
             }
             catch (DomainValidation ex)
             {
@@ -92,9 +93,9 @@ namespace CleanArchitecture.Application.Services
         public async Task DeleteAsync(Guid id)
         {
             await _repository.DeleteAsync(id);
-            var clienteCache = await _redisCache.GetStringAsync($"{id}");
+            var clienteCache = await _redis.GetStringAsync($"{id}");
             if (clienteCache is not null)
-                await _redisCache.RemoveAsync($"{id}");
+                await _redis.RemoveAsync($"{id}");
         }
 
         public async Task UpdateAsync(ClienteDTO cliente)
@@ -102,9 +103,9 @@ namespace CleanArchitecture.Application.Services
             var clienteMap = _mapper.Map<Cliente>(cliente);
             await _repository.UpdateAsync(clienteMap);
 
-            var clienteCache = await _redisCache.GetStringAsync($"{clienteMap.Id}");
+            var clienteCache = await _redis.GetStringAsync($"{clienteMap.Id}");
             if (clienteCache is not null)
-                await _redisCache.RemoveAsync($"{clienteMap.Id}");
+                await _redis.RemoveAsync($"{clienteMap.Id}");
         }
     }
 }

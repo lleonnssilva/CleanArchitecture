@@ -1,4 +1,4 @@
-﻿using CleanArchitecture.Application.DTOS;
+﻿using CleanArchitecture.Application.DTOS.Cliente;
 
 namespace CleanArchitecture.Application.Interfaces
 {

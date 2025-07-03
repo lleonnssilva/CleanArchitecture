@@ -1,4 +1,5 @@
-﻿using Core.Application.DTOs;
+﻿using CleanArchitecture.Application.DTOS.Auth;
+using CleanArchitecture.Application.DTOS.User;
 using System.Security.Claims;
 
 namespace CleanArchitecture.Application.Interfaces.Identity

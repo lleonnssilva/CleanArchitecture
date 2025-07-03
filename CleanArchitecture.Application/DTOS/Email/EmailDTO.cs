@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Application.DTOS
+﻿namespace CleanArchitecture.Application.DTOS.Email
 {
     public class EmailDTO
     {

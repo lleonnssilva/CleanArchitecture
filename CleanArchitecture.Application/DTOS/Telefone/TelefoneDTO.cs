@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Application.DTOS
+﻿namespace CleanArchitecture.Application.DTOS.Telefone
 {
     public class TelefoneDTO
     {

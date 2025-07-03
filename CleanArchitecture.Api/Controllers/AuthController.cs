@@ -1,5 +1,6 @@
-﻿using CleanArchitecture.Application.Interfaces.Identity;
-using Core.Application.DTOs;
+﻿using CleanArchitecture.Application.DTOS.Auth;
+using CleanArchitecture.Application.DTOS.User;
+using CleanArchitecture.Application.Interfaces.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

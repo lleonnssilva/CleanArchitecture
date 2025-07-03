@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
-using CleanArchitecture.Application.DTOS;
+using CleanArchitecture.Application.DTOS.Cliente;
+using CleanArchitecture.Application.DTOS.Email;
+using CleanArchitecture.Application.DTOS.Endereco;
+using CleanArchitecture.Application.DTOS.Telefone;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.ValueObjects;
 

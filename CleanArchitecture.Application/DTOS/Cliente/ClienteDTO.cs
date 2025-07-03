@@ -1,4 +1,8 @@
-﻿namespace CleanArchitecture.Application.DTOS
+﻿using CleanArchitecture.Application.DTOS.Email;
+using CleanArchitecture.Application.DTOS.Endereco;
+using CleanArchitecture.Application.DTOS.Telefone;
+
+namespace CleanArchitecture.Application.DTOS.Cliente
 {
     public class ClienteDTO
     {

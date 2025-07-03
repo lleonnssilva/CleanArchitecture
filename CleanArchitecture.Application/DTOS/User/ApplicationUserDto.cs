@@ -1,4 +1,4 @@
-﻿namespace Core.Application.DTOs
+﻿namespace CleanArchitecture.Application.DTOS.User
 {
     public class ApplicationUserDto
     {
