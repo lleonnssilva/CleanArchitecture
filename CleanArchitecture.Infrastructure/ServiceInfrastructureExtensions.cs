@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CleanArchitecture.Application.Interfaces.Identity;
 using CleanArchitecture.Domain.Events;
+using CleanArchitecture.Domain.Interfaces.MessageBus;
 using CleanArchitecture.Domain.Interfaces.RabbitMQ;
 using CleanArchitecture.Domain.Interfaces.Repositories;
 using CleanArchitecture.Infrastructure.Context;
@@ -27,7 +28,9 @@ namespace CleanArchitecture.Infrastructure
 
             services.AddScoped<IEventPublisher, EventPublisher>();
             services.AddScoped<IClienteRepository, ClienteRepository>();
-            services.AddScoped<IMessageProducer, MessageProducer>();
+            //services.AddScoped<IMessageSQSProducer, MessageSQSProducer>();
+            services.AddScoped<IMessageRMQProducer, MessageRMQProducer>();
+            
 
             services.AddStackExchangeRedisCache(options =>
             {

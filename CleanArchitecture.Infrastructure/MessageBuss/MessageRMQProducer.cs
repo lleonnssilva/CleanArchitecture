@@ -1,18 +1,26 @@
-﻿using CleanArchitecture.Domain.Interfaces.RabbitMQ;
+﻿using CleanArchitecture.Domain.Interfaces.MessageBus;
+using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
 
 namespace CleanArchitecture.Infrastructure.MessageBuss
 {
-    public class MessageProducer : IMessageProducer
+    public class MessageRMQProducer : IMessageRMQProducer
     {
+        private readonly IConfiguration _configuration;
+
+        public MessageRMQProducer(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public void SendMessage<T>(T message, string tipo)
         {
 
             var factory = new ConnectionFactory
             {
-                HostName = "localhost"
+                HostName = _configuration.GetConnectionString("RMQConnection")
             };
 
             var connection = factory.CreateConnection();

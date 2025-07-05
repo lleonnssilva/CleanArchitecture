@@ -1,14 +1,14 @@
 ﻿using CleanArchitecture.Domain.Events;
-using CleanArchitecture.Domain.Interfaces.RabbitMQ;
+using CleanArchitecture.Domain.Interfaces.MessageBus;
 using Newtonsoft.Json;
 
 namespace CleanArchitecture.Infrastructure.Events
 {
     public class EventPublisher : IEventPublisher
     {
-        private readonly IMessageProducer _messageProducer;
+        private readonly IMessageRMQProducer _messageProducer;
 
-        public EventPublisher(IMessageProducer messageProducer)
+        public EventPublisher(IMessageRMQProducer messageProducer)
         {
             _messageProducer = messageProducer;
         }
