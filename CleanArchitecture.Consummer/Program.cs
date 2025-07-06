@@ -10,7 +10,7 @@ using System.Text;
 class Program
 {
 
-    private static readonly string queueUrl = "";
+    private static readonly string queueUrl = "https://sqs.us-east-1.amazonaws.com/676206946905/MyQueeCliente";
     private static readonly AmazonSQSClient sqsClient = new AmazonSQSClient("", "", RegionEndpoint.USEast1);
     static async Task Main(string[] args)
     {
@@ -72,8 +72,9 @@ class Program
                 if (
                     receiveMessageResponse.Messages != null &&
                     receiveMessageResponse.Messages.Count > 0 &&
+                    receiveMessageResponse.Messages[0].MessageAttributes != null &&
                     receiveMessageResponse.Messages[0].MessageAttributes.ContainsKey("EventType") &&
-                    receiveMessageResponse.Messages[0].MessageAttributes["EventType"].StringValue == "ClienteCastratadoEvent")
+                    receiveMessageResponse.Messages[0].MessageAttributes["EventType"].StringValue == "ClienteCadastradoEvent")
                 {
                     var message = receiveMessageResponse.Messages[0];
 
@@ -116,6 +117,7 @@ class Program
 
         await sqsClient.DeleteMessageAsync(deleteMessageRequest);
         Console.WriteLine("Mensagem excluída da fila.");
+        await LoadSQS();
     }
 
 }

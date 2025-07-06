@@ -5,10 +5,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information() // Defina o nível mínimo de log
+    .WriteTo.File("Log\\log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
+// Usar o Serilog como o log provider
+builder.Logging.ClearProviders(); // Limpa os provedores de log existentes
+builder.Logging.AddSerilog(); // Adiciona o Serilog como o provedor de log
 
 builder.Services.AddAuthentication(opt =>
 {

@@ -28,8 +28,8 @@ namespace CleanArchitecture.Infrastructure
 
             services.AddScoped<IEventPublisher, EventPublisher>();
             services.AddScoped<IClienteRepository, ClienteRepository>();
-            //services.AddScoped<IMessageSQSProducer, MessageSQSProducer>();
-            services.AddScoped<IMessageRMQProducer, MessageRMQProducer>();
+            services.AddScoped<IMessageSQSProducer, MessageSQSProducer>();
+            //services.AddScoped<IMessageRMQProducer, MessageRMQProducer>();
             
 
             services.AddStackExchangeRedisCache(options =>

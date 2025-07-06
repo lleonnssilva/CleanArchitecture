@@ -27,7 +27,7 @@ namespace CleanArchitecture.Api.Controllers
             return Ok(clientes);
         }
 
-        [Authorize(Roles = "Cliente")]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
