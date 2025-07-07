@@ -31,7 +31,7 @@ namespace CleanArchitecture.Application.Services
 
         public async Task<IEnumerable<ClienteDTO>> GetAllsync()
         {
-           
+
             var clientes = await _repository.GetAllsync();
             _logService.LogInfo($"Listando todos clientes");
 
@@ -40,43 +40,14 @@ namespace CleanArchitecture.Application.Services
 
         public async Task<ClienteDTO> GetByIdAsync(Guid id)
         {
+            var clientCache = await ClientByIdCache(id);
+            if (clientCache != null)
+                return clientCache;
 
-            var cliente = await _redis.GetStringAsync($"{id}");
-            _logService.LogInfo($"Buscando o cliente com ID - {id} em cache");
+            return await ClientByIdDB(id);
 
-            if (string.IsNullOrEmpty(cliente))
-            {
-                var clienteFromDb = await _repository.GetByIdAsync(id);
-
-                if (clienteFromDb != null)
-                {
-                   
-                    var clienteJson = JsonSerializer.Serialize(clienteFromDb);
-                    await _redis.SetStringAsync($"{id}", clienteJson,
-                        options: new DistributedCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
-                        });
-                    _logService.LogInfo($"Setando o cliente com ID - {id} em cache");
-                }
-
-                _logService.LogInfo($"Buscando o cliente com ID - {id} em DB");
-                return _mapper.Map<ClienteDTO>(clienteFromDb);
-
-            }
-
-
-            var clienteCache = JsonSerializer.Deserialize<ClienteDTO>(cliente);
-
-            if (clienteCache == null)
-            {
-                var clienteFromDb = await _repository.GetByIdAsync(id);
-                _logService.LogInfo($"Buscando o cliente com ID - {id} em DB");
-                return _mapper.Map<ClienteDTO>(clienteFromDb);
-            }
-            _logService.LogInfo($"Retornando o cliente com ID - {id} em Cache");
-            return _mapper.Map<ClienteDTO>(clienteCache);
         }
+
         public async Task AddAsync(ClienteDTO cliente)
         {
             try
@@ -85,13 +56,9 @@ namespace CleanArchitecture.Application.Services
                 await _repository.AddAsync(clienteMap);
                 _logService.LogInfo($"Cliente com ID - {cliente.Id} adicionado em DB");
 
-                var clienteCadastradoEvent = new ClienteCadastradoEvent(clienteMap);
-                _events.Publish(clienteCadastradoEvent);
-                _logService.LogInfo($"Evento de clienteCadastradoEvent publicado");
+                PublicarEvento(clienteMap);
 
-                
-                await _redis.SetStringAsync($"{clienteMap.Id}", JsonSerializer.Serialize(clienteMap));
-                _logService.LogInfo($"Cliente com ID - {cliente.Id} dicionando em Cache");
+                await AddCache(cliente, clienteMap);
 
             }
             catch (DomainValidation ex)
@@ -137,7 +104,55 @@ namespace CleanArchitecture.Application.Services
                 await _redis.RemoveAsync($"{clienteMap.Id}");
                 _logService.LogInfo($"Cliente com ID - {clienteMap.Id} atualizao em Cache");
             }
-                
+
         }
+
+        private async Task AddCache(ClienteDTO cliente, Cliente clienteMap)
+        {
+            await _redis.SetStringAsync($"{clienteMap.Id}", JsonSerializer.Serialize(clienteMap));
+            _logService.LogInfo($"Cliente com ID - {cliente.Id} dicionando em Cache");
+        }
+        private void PublicarEvento(Cliente clienteMap)
+        {
+            var clienteCadastradoEvent = new ClienteCadastradoEvent(clienteMap);
+            _events.Publish(clienteCadastradoEvent);
+            _logService.LogInfo($"Evento de clienteCadastradoEvent publicado");
+        }
+        private async Task<ClienteDTO> ClientByIdDB(Guid id)
+        {
+            var clienteFromDb = await _repository.GetByIdAsync(id);
+
+
+            if (clienteFromDb != null)
+            {
+                _logService.LogInfo($"Buscando o cliente com ID - {id} em DB");
+                var clienteJson = JsonSerializer.Serialize(clienteFromDb);
+
+                await _redis.SetStringAsync($"{id}", clienteJson,
+                    options: new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
+                    });
+
+                _logService.LogInfo($"Setando o cliente com ID - {id} em cache");
+            }
+
+            return _mapper.Map<ClienteDTO>(clienteFromDb);
+        }
+        private async Task<ClienteDTO> ClientByIdCache(Guid id)
+        {
+            var cliente = await _redis.GetStringAsync($"{id}");
+
+
+            if (cliente != null)
+            {
+                _logService.LogInfo($"Buscando o cliente com ID - {id} em cache");
+                var clienteCache = JsonSerializer.Deserialize<ClienteDTO>(cliente);
+                return _mapper.Map<ClienteDTO>(clienteCache);
+            }
+
+            return _mapper.Map<ClienteDTO>(cliente);
+        }
+      
     }
 }
