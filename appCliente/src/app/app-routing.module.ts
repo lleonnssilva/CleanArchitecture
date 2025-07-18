@@ -10,7 +10,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'cadastro', component: CadastroComponent },
   { path: 'pesquisa-cliente', component: PesquisaClienteComponent,canActivate: [AuthGuard]}, // Protegendo com Guard, 
-  { path: 'atualizar-cliente', component: AtualizarClienteComponent,canActivate: [AuthGuard] }, // Protegendo com Guard
+  { path: 'atualizar-cliente/:id', component: AtualizarClienteComponent,canActivate: [AuthGuard] }, // Protegendo com Guard
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];
 

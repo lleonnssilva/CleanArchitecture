@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AtualizarComponent } from './atualizar-cliente.component';
+import { AtualizarClienteComponent } from './atualizar-cliente.component';
 
 describe('AtualizarComponent', () => {
-  let component: AtualizarComponent;
-  let fixture: ComponentFixture<AtualizarComponent>;
+  let component: AtualizarClienteComponent;
+  let fixture: ComponentFixture<AtualizarClienteComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AtualizarComponent]
+      declarations: [AtualizarClienteComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(AtualizarComponent);
+    fixture = TestBed.createComponent(AtualizarClienteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
