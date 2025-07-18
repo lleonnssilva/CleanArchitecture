@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using CleanArchitecture.Application.Interfaces.Identity;
 using CleanArchitecture.Domain.Events;
-using CleanArchitecture.Domain.Interfaces.MessageBus;
 using CleanArchitecture.Domain.Interfaces.RabbitMQ;
 using CleanArchitecture.Domain.Interfaces.Repositories;
 using CleanArchitecture.Infrastructure.Context;
@@ -12,10 +10,13 @@ using CleanArchitecture.Infrastructure.Identity.Models;
 using CleanArchitecture.Infrastructure.Identity.Services;
 using CleanArchitecture.Infrastructure.MessageBuss;
 using CleanArchitecture.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CleanArchitecture.Infrastructure
 {
@@ -40,9 +41,26 @@ namespace CleanArchitecture.Infrastructure
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppIdentityDbContext>()
                 .AddDefaultTokenProviders();
-            services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IUserService, UserService>();
-
+            services.AddScoped<AuthService>();
+            services.AddScoped<UserService>();
+            services.AddScoped<AuthService>();
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(o =>
+            {
+                o.RequireHttpsMetadata = false;
+                o.SaveToken = true;
+                //o.Audience = "api";
+                o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes((AuthService.JWT_SECURIRY_KEY)))
+                };
+            });
             MapperConfiguration mappingConfig = new(mc =>
             {
                 mc.AddProfile(new InfrastructureIdentityProfile());

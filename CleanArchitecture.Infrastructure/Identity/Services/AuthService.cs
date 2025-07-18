@@ -1,214 +1,141 @@
-﻿using AutoMapper;
-using CleanArchitecture.Application.DTOS.Auth;
-using CleanArchitecture.Application.DTOS.User;
-using CleanArchitecture.Application.Interfaces.Identity;
-using CleanArchitecture.Infrastructure.Identity.Helpers;
-using CleanArchitecture.Infrastructure.Identity.Models;
+﻿using CleanArchitecture.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace CleanArchitecture.Infrastructure.Identity.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService
     {
-        private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        //public const string JWT_SECURIRY_KEY = "yPkCqn4kSWLtaJwXvN2jGzpQRyTZ3gdXkt7FeBJP";
+        public const string JWT_SECURIRY_KEY = "@@AppAuth2022_@@AppAuth2023_@@AppAuth2024_@@AppAuth2025";
 
-        public AuthService(IMapper mapper, UserManager<ApplicationUser> UserManager, SignInManager<ApplicationUser> signInManager)
+        private const int JWT_TOKEN_VALIDITY_MINS = 30;
+
+
+        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
-            _mapper = mapper;
-            _userManager = UserManager;
+            _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
-        public async Task<bool> SignInAsync(SignInRequest request)
+        public async Task<AuthenticationResponse?> Autenticate(AuthenticationRequest authenticationRequest)
         {
-            SignInResult signInResult = await _signInManager.PasswordSignInAsync(request.Email, request.Password, request.RememberMe, false);
-            
-            return signInResult.Succeeded;
-        }
-
-        public async Task SignOutAsync()
-        {
-            await _signInManager.SignOutAsync();
-        }
-
-        public async Task<ApplicationUserDto> GetCurrentUserAsync(ClaimsPrincipal principal)
-        {
-            if (principal == null)
-            {
+            if (string.IsNullOrWhiteSpace(authenticationRequest.UserName) || string.IsNullOrWhiteSpace(authenticationRequest.Password))
                 return null;
+
+
+            SignInResult signInResult = await _signInManager.PasswordSignInAsync(authenticationRequest.UserName, authenticationRequest.Password, true, false);
+            if (signInResult.Succeeded)
+            {
+                var user = await _userManager.FindByNameAsync(authenticationRequest.UserName);
+                if (user == null)
+                    return null;
+
+                var rolesClaims = new List<Claim>();
+
+
+                var roles = await _userManager.GetRolesAsync(user);
+                foreach (var role in roles)
+                {
+                    rolesClaims.Add(new Claim(ClaimTypes.Role, role));
+                }
+                rolesClaims.Add(new Claim(JwtRegisteredClaimNames.Name, authenticationRequest.UserName));
+
+                var claimsIdentity = new ClaimsIdentity(rolesClaims);
+
+                var tokenExpiryTimeStamp = DateTime.UtcNow.AddMinutes(JWT_TOKEN_VALIDITY_MINS);
+                var tokenKey = Encoding.ASCII.GetBytes(JWT_SECURIRY_KEY);
+
+
+
+                var signingCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(tokenKey),
+                    SecurityAlgorithms.HmacSha256Signature);
+
+
+                var securityTokenDescriptor = new SecurityTokenDescriptor
+                {
+                    //Audience = "api",
+                    Subject = claimsIdentity,
+                    Expires = tokenExpiryTimeStamp,
+                    SigningCredentials = signingCredentials
+                };
+
+                var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+                var securityToken = jwtSecurityTokenHandler.CreateToken(securityTokenDescriptor);
+                var token = jwtSecurityTokenHandler.WriteToken(securityToken);
+
+                return new AuthenticationResponse
+                {
+                    UserName = authenticationRequest.UserName,
+                    ExpireIn = (int)tokenExpiryTimeStamp.Subtract(DateTime.Now).TotalSeconds,
+                    JwtToken = token,
+                };
             }
 
-            string userId = _userManager.GetUserId(principal);
-            if (string.IsNullOrEmpty(userId))
-            {
-                return null;
-            }
-
-            ApplicationUser user = await _userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                return null;
-            }
-
-            return _mapper.Map<ApplicationUserDto>(user);
+            return null;
         }
 
-        public async Task<AuthenticationResponse> SignUpAsync(SignUpRequest request)
+        public async Task<UserCreateResponse?> RegisterAsync(UserCreateRequest request)
         {
             ApplicationUser user = new ApplicationUser
             {
-                Email = request.Email,
-                UserName = request.Email
+                UserName = request.UserName
             };
 
             IdentityResult result = await _userManager.CreateAsync(user, request.Password);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
+                return null;
+
+
+            var role = "User";
+            if (!await _roleManager.RoleExistsAsync(role))
             {
-                await _signInManager.SignInAsync(user, isPersistent: false);
+                await _roleManager.CreateAsync(new IdentityRole(role));
             }
 
-            return result.ToAuthenticationResult();
-        }
+            await _userManager.AddToRoleAsync(user, role);
 
-        public async Task<AuthenticationResponse> ChangePasswordAsync(ClaimsPrincipal principal, string currentPassword, string newPassword)
-        {
-            ApplicationUser user = await _userManager.GetUserAsync(principal);
-            
-            if (user == null)
+            var tokenExpiryTimeStamp = DateTime.UtcNow.AddMinutes(JWT_TOKEN_VALIDITY_MINS);
+            var tokenKey = Encoding.ASCII.GetBytes(JWT_SECURIRY_KEY);
+
+            var claimsIdentity = new ClaimsIdentity(new List<Claim>
             {
-                return new AuthenticationResponse()
-                {
-                    Succeeded = false,
-                    Errors = new Dictionary<string, string>() { { string.Empty, "Invalid request." } }
-                };
-            }
+                new Claim(JwtRegisteredClaimNames.Name, request.UserName),
+                new Claim(ClaimTypes.Role,role )
+            });
 
-            IdentityResult result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
-            
-            return result.ToAuthenticationResult();
-        }
 
-        public async Task<AuthenticationResponse> ResetPasswordAsync(ResetPasswordRequest request)
-        {
-            ApplicationUser user = await _userManager.FindByEmailAsync(request.UserEmail);
+            var signingCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(tokenKey),
+                SecurityAlgorithms.HmacSha256Signature);
 
-            if (user == null)
+            var securityTokenDescriptor = new SecurityTokenDescriptor
             {
-                return new AuthenticationResponse()
-                {
-                    Succeeded = false,
-                    Errors = new Dictionary<string, string>() { { string.Empty, "Invalid request." } }
-                };
-            }
-            
-            IdentityResult result = await _userManager.ResetPasswordAsync(user, Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token)), request.NewPassword);
-            
-            return result.ToAuthenticationResult();
-        }
-
-        public async Task<TokenResponse> GeneratePasswordResetTokenAsync(string email)
-        {
-            ApplicationUser user = await _userManager.FindByEmailAsync(email);
-
-            if (user == null)
-            {
-                return new TokenResponse()
-                {
-                    Succeeded = false,
-                    Errors = new Dictionary<string, string>() { { string.Empty, "Invalid request." } }
-                };
-            }
-
-            string token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-            return new TokenResponse()
-            {
-                Succeeded = true,
-                Token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token))
+                Subject = claimsIdentity,
+                Expires = tokenExpiryTimeStamp,
+                SigningCredentials = signingCredentials
             };
-        }
 
-        public async Task<TokenResponse> GenerateEmailConfirmationAsync(ClaimsPrincipal principal)
-        {
-            ApplicationUser user = await _userManager.GetUserAsync(principal);
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = jwtSecurityTokenHandler.CreateToken(securityTokenDescriptor);
+            var token = jwtSecurityTokenHandler.WriteToken(securityToken);
 
-            if (user == null)
+            return new UserCreateResponse
             {
-                return new TokenResponse()
-                {
-                    Succeeded = false,
-                    Errors = new Dictionary<string, string>() { { string.Empty, "Invalid request." } }
-                };
-            }
-
-            string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-            return new TokenResponse()
-            {
-                Succeeded = true,
-                UserId = user.Id,
-                Token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code))
+                UserName = request.UserName,
+                ExpireIn = (int)tokenExpiryTimeStamp.Subtract(DateTime.Now).TotalSeconds,
+                JwtToken = token,
             };
-        }
 
-        public async Task<AuthenticationResponse> ConfirmEmailAsync(EmailConfirmationRequest request)
-        {
-            ApplicationUser user = await _userManager.FindByIdAsync(request.UserId);
-
-            if (user == null)
-            {
-                return new AuthenticationResponse()
-                {
-                    Succeeded = false,
-                    Errors = new Dictionary<string, string>() { { string.Empty, "Invalid request." } }
-                };
-            }
-            
-            string token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
-            
-            IdentityResult result = await _userManager.ConfirmEmailAsync(user, token);
-            
-            return result.ToAuthenticationResult();
-        }
-
-        public async Task RefreshSignInAsync(ClaimsPrincipal principal)
-        {
-            ApplicationUser user = await _userManager.GetUserAsync(principal);
-
-            if (user != null)
-            {
-                await _signInManager.RefreshSignInAsync(user);
-            }
-        }
-
-        public async Task<TokenResponse> GenerateEmailChangeAsync(ClaimsPrincipal principal, string newEmail)
-        {
-            ApplicationUser user = await _userManager.GetUserAsync(principal);
-
-            if (user == null)
-            {
-                return new TokenResponse()
-                {
-                    Succeeded = false,
-                    Errors = new Dictionary<string, string>() { { string.Empty, "Invalid request." } }
-                };
-            }
-
-            string token = await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
-            
-            return new TokenResponse()
-            {
-                Succeeded = true,
-                Token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token)),
-                UserId = user.Id
-            };
         }
     }
 }

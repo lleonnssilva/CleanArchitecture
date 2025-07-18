@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace CleanArchitecture.Infrastructure.Identity.Services
 {
-    public class UserService : IUserService
+    public class UserService
     {
         public UserManager<ApplicationUser> _userManager { get; }
         public IMapper _mapper { get; }
@@ -50,13 +50,6 @@ namespace CleanArchitecture.Infrastructure.Identity.Services
             return await _userManager.GetUserIdAsync(user);
         }
 
-        public async Task<AuthenticationResponse> ChangeEmailAsync(ClaimsPrincipal principal, string email, string code)
-        {
-            ApplicationUser user = await _userManager.GetUserAsync(principal);
-            IdentityResult result = await _userManager.ChangeEmailAsync(user, email, code);
-            return result.ToAuthenticationResult();
-        }
-
         public async Task<bool> IsEmailConfirmedAsync(string email)
         {
             ApplicationUser user = await _userManager.FindByEmailAsync(email);
@@ -69,12 +62,6 @@ namespace CleanArchitecture.Infrastructure.Identity.Services
             return await _userManager.IsEmailConfirmedAsync(user);
         }
 
-        public async Task<AuthenticationResponse> ChangePasswordAsync(ClaimsPrincipal principal, string oldPassword, string newPassword)
-        {
-            ApplicationUser user = await _userManager.GetUserAsync(principal);
-            IdentityResult result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
-            return result.ToAuthenticationResult();
-        }
 
         public async Task<bool> HasPasswordAsync(ClaimsPrincipal principal)
         {
@@ -98,20 +85,7 @@ namespace CleanArchitecture.Infrastructure.Identity.Services
         {
             ApplicationUser user = await _userManager.GetUserAsync(principal);
             return await _userManager.GetPhoneNumberAsync(user);
-        }
-
-        public async Task<AuthenticationResponse> SetPhoneNumberAsync(ClaimsPrincipal principal, string phoneNumber)
-        {
-            ApplicationUser user = await _userManager.GetUserAsync(principal);
-            IdentityResult result = await _userManager.SetPhoneNumberAsync(user, phoneNumber);
-            return result.ToAuthenticationResult();
-        }
-
-        public async Task<AuthenticationResponse> AddPasswordAsync(ClaimsPrincipal principal, string newPassword)
-        {
-            ApplicationUser user = await _userManager.GetUserAsync(principal);
-            IdentityResult result = await _userManager.AddPasswordAsync(user, newPassword);
-            return result.ToAuthenticationResult();
+        
         }
     }
 }
