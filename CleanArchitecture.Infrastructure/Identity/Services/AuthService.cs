@@ -12,7 +12,6 @@ namespace CleanArchitecture.Infrastructure.Identity.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        //public const string JWT_SECURIRY_KEY = "yPkCqn4kSWLtaJwXvN2jGzpQRyTZ3gdXkt7FeBJP";
         public const string JWT_SECURIRY_KEY = "@@AppAuth2022_@@AppAuth2023_@@AppAuth2024_@@AppAuth2025";
 
         private const int JWT_TOKEN_VALIDITY_MINS = 30;

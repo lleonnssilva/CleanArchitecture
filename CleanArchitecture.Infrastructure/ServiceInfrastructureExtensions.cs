@@ -51,7 +51,7 @@ namespace CleanArchitecture.Infrastructure
                 o.RequireHttpsMetadata = false;
                 o.SaveToken = true;
                 //o.Audience = "api";
-                o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                o.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     ValidateAudience = false,
