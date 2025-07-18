@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using CleanArchitecture.Application.Interfaces;
-using CleanArchitecture.Application.Interfaces.Identity;
 using CleanArchitecture.Application.Logging;
 using CleanArchitecture.Application.Mapper;
 using CleanArchitecture.Application.Services;

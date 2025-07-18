@@ -42,8 +42,6 @@ namespace CleanArchitecture.Infrastructure
                 .AddEntityFrameworkStores<AppIdentityDbContext>()
                 .AddDefaultTokenProviders();
             services.AddScoped<AuthService>();
-            services.AddScoped<UserService>();
-            services.AddScoped<AuthService>();
             services.AddAuthentication(o =>
             {
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
