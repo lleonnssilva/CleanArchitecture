@@ -1,0 +1,42 @@
+<div class="container">
+  <h2>Pesquisa de Clientes</h2>
+
+  <!-- Formulário de Pesquisa -->
+  <div class="mb-3">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Pesquise por nome ou email"
+      [(ngModel)]="pesquisa"
+      (input)="buscarClientes()"
+    />
+  </div>
+
+  <!-- Tabela de Clientes -->
+  <table class="table table-striped" *ngIf="clientesFiltrados.length > 0">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cliente of clientesFiltrados">
+        <td>{{ cliente.nome }}</td>
+        <td>{{ cliente.email }}</td>
+        <td>{{ cliente.telefone }}</td>
+        <td>
+          <button class="btn btn-warning btn-sm" (click)="editarCliente(cliente.id)">Editar</button>
+          <button class="btn btn-danger btn-sm" (click)="excluirCliente(cliente.id)">Excluir</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Mensagem de Sem Resultados -->
+  <div *ngIf="clientesFiltrados.length === 0" class="alert alert-info">
+    Nenhum cliente encontrado.
+  </div>
+</div>

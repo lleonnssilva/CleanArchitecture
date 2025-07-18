@@ -1,0 +1,32 @@
+<div class="app-container">
+  <header>
+    <nav class="navbar">
+      <a class="navbar-brand" href="/">Meu App</a>
+      <ul class="nav">
+        <!-- Home link, visível apenas se o usuário estiver autenticado -->
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/home']" *ngIf="isAuthenticated()">Home</a>
+        </li>
+        
+        <!-- Login link, visível apenas se o usuário NÃO estiver autenticado -->
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/login']" *ngIf="!isAuthenticated()">Login</a>
+        </li>
+        
+        <!-- Logout link, visível apenas se o usuário estiver autenticado -->
+        <li class="nav-item" *ngIf="isAuthenticated()">
+          <a class="nav-link" href="#" (click)="logout()">Logout</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Aqui as rotas serão injetadas conforme a navegação -->
+  <main>
+    <router-outlet></router-outlet> <!-- Área onde o conteúdo das rotas será carregado -->
+  </main>
+
+  <footer>
+    <p>© 2025 Meu App. Todos os direitos reservados.</p>
+  </footer>
+</div>

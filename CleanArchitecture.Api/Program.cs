@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Serilog;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
@@ -13,27 +14,10 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File("Log\\log.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
-// Usar o Serilog como o log provider
+
 builder.Logging.ClearProviders(); // Limpa os provedores de log existentes
 builder.Logging.AddSerilog(); // Adiciona o Serilog como o provedor de log
-//builder.Services.AddAuthentication(opt =>
-//{
-//    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
-//   .AddJwtBearer(options =>
-//   {
-//       options.TokenValidationParameters = new TokenValidationParameters
-//       {
-//           ValidateIssuer = true,
-//           ValidateAudience = true,
-//           ValidateLifetime = true,
-//           ValidateIssuerSigningKey = true,
-//           ValidIssuer = builder.Configuration["Jwt:Issuer"],
-//           ValidAudience = builder.Configuration["Jwt:Audience"],
-//           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-//       };
-//   });
+
 
 builder.Services.AddCors(options =>
 {
@@ -92,8 +76,22 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
-
-
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowSpecificOrigin",
+//        builder => builder.WithOrigins("http://localhost:59052")
+//                          .AllowAnyHeader()
+//                          .AllowAnyMethod());
+//});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", policy =>
+    {
+        policy.AllowAnyOrigin()  // Permite todas as origens (atenção para isso em produção)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -109,7 +107,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseCors("AllowAllOrigins");
 app.MapControllers();
 
 app.Run();

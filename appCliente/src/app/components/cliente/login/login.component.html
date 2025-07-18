@@ -1,0 +1,80 @@
+<div class="login-container">
+  <h2>Login</h2>
+
+  <!-- Formulário de login -->
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <!-- Campo de email -->
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        class="form-control"
+        [(ngModel)]="usuario.userName"
+        name="email"
+        required
+        [ngClass]="{'is-invalid': loginForm.submitted && !usuario.userName}"
+        placeholder="Digite seu userName"
+      />
+      <div *ngIf="loginForm.submitted && !usuario.userName" class="invalid-feedback">
+        Email é obrigatório.
+      </div>
+    </div>
+
+    <!-- Campo de senha -->
+    <div class="form-group">
+      <label for="senha">Senha:</label>
+      <input
+        type="password"
+        id="senha"
+        class="form-control"
+        [(ngModel)]="usuario.password"
+        name="senha"
+        required
+        [ngClass]="{'is-invalid': loginForm.submitted && !usuario.password}"
+        placeholder="Digite sua senha"
+      />
+      <div *ngIf="loginForm.submitted && !usuario.password" class="invalid-feedback">
+        Senha é obrigatória.
+      </div>
+    </div>
+
+    <!-- Exibição de erro no login -->
+    <div *ngIf="erroAutenticacao" class="alert alert-danger">
+      Usuário ou senha inválidos. Tente novamente.
+    </div>
+
+    <!-- Botão de login -->
+    <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Entrar</button>
+  </form>
+</div>
+
+<!-- Estilos simples para o formulário -->
+<style>
+  .login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .invalid-feedback {
+    color: red;
+    font-size: 0.875rem;
+  }
+
+  .alert-danger {
+    margin-top: 15px;
+  }
+</style>
