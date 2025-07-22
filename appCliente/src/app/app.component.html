@@ -1,16 +1,18 @@
 <div class="app-container">
   <header>
     <nav class="navbar">
-      <a class="navbar-brand" href="/">Meu App</a>
+      <a class="navbar-brand" href="/home">Meu App</a>
       <ul class="nav">
         <!-- Home link, visível apenas se o usuário estiver autenticado -->
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/home']" *ngIf="isAuthenticated()">Home</a>
+        <li *ngIf="isAuthenticated()"class="nav-item">
+          <a class="nav-link" [routerLink]="['/home']">Home</a>
         </li>
-        
+        <li *ngIf="isAuthenticated()"class="nav-item">
+          <a class="nav-link" [routerLink]="['/pesquisa-cliente']" >Clientes</a>
+        </li>
         <!-- Login link, visível apenas se o usuário NÃO estiver autenticado -->
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/login']" *ngIf="!isAuthenticated()">Login</a>
+        <li *ngIf="!isAuthenticated()"class="nav-item">
+          <a class="nav-link" [routerLink]="['/login']" >Login</a>
         </li>
         
         <!-- Logout link, visível apenas se o usuário estiver autenticado -->
@@ -27,6 +29,6 @@
   </main>
 
   <footer>
-    <p>© 2025 Meu App. Todos os direitos reservados.</p>
+    <!-- <p>© 2025 Meu App. Todos os direitos reservados.</p> -->
   </footer>
 </div>

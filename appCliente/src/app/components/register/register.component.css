@@ -1,0 +1,27 @@
+
+  .register-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .invalid-feedback {
+    color: red;
+    font-size: 0.875rem;
+  }
+
+  .alert-danger {
+    margin-top: 15px;
+  }

@@ -8,6 +8,7 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['./app.component.css']   // O CSS do componente
 })
 export class AppComponent {
+  title: string ="";
   constructor(public authService: AuthService, private router: Router) {}
 
   // Método para verificar se o usuário está logado

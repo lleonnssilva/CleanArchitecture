@@ -1,12 +1,12 @@
 <div class="container">
   <h2>Pesquisa de Clientes</h2>
-
+  <button class="btn btn-warning btn-sm" (click)="novoCliente()">Novo cliente</button>
   <!-- Formulário de Pesquisa -->
   <div class="mb-3">
     <input
       type="text"
       class="form-control"
-      placeholder="Pesquise por nome ou email"
+      placeholder="Pesquisar"
       [(ngModel)]="pesquisa"
       (input)="buscarClientes()"
     />
@@ -16,6 +16,7 @@
   <table class="table table-striped" *ngIf="clientesFiltrados.length > 0">
     <thead>
       <tr>
+         <th>Id</th>
         <th>Nome</th>
         <th>Email</th>
         <th>Telefone</th>
@@ -24,9 +25,10 @@
     </thead>
     <tbody>
       <tr *ngFor="let cliente of clientesFiltrados">
+        <td>{{ cliente.id }}</td>
         <td>{{ cliente.nome }}</td>
-        <td>{{ cliente.email }}</td>
-        <td>{{ cliente.telefone }}</td>
+        <td>{{ cliente.email.enderecoEmail }}</td>
+        <td>{{ cliente.telefone.ddd }}{{ cliente.telefone.numeroTelefone }}</td>
         <td>
           <button class="btn btn-warning btn-sm" (click)="editarCliente(cliente.id)">Editar</button>
           <button class="btn btn-danger btn-sm" (click)="excluirCliente(cliente.id)">Excluir</button>

@@ -2,28 +2,32 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'; // Importando o HttpClientModule
-import { ClienteService } from './services/cliente.service';
 import { AppRoutingModule } from './app-routing.module';
-import { FormsModule } from '@angular/forms';
-import { LoginComponent } from './components/cliente/login/login.component';
-import { CadastroComponent } from './components/cliente/cadastro/cadastro-cliente.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CadastroClienteComponent } from './components/cliente/cadastro/cadastro-cliente.component';
 import { AtualizarClienteComponent } from './components/cliente/atualizar/atualizar-cliente.component';
 import { PesquisaClienteComponent } from './components/cliente/pesquisa/pesquisa-cliente.component';
 import { AuthInterceptor } from './inteceptors/auth.interceptor';
+import { HomeComponent } from './components/home/home.component';
+import { RegisterComponent } from './components/register/register.component';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    CadastroComponent,
+    CadastroClienteComponent,
     PesquisaClienteComponent,
-    AtualizarClienteComponent
+    AtualizarClienteComponent,
+    HomeComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule ,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule
   ],
    providers: [
     {

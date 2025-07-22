@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http'; // Para tipar o erro
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
+
 
 @Component({
   selector: 'app-login',

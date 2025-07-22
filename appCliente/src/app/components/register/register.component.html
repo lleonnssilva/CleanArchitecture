@@ -1,0 +1,42 @@
+<div class="register-container">
+  <h2>Cadastro</h2>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="userName">UserName:</label>
+      <input 
+        type="text" 
+        id="userName" 
+        class="form-control" 
+        [(ngModel)]="usuario.userName" 
+        name="userName" 
+        required 
+        placeholder="Digite um userName"
+      />
+    </div>
+
+    
+
+    <div class="form-group">
+      <label for="password">Password:   </label>
+      <input 
+        type="password" 
+        id="password" 
+        class="form-control" 
+        [(ngModel)]="usuario.password" 
+        name="password" 
+        placeholder="Digite um password"
+        required 
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Cadastrar</button>
+    <a href="/login" class="btn btn-primary">
+      Já tem conta?
+    </a>
+  </form>
+
+  <div *ngIf="erroCadastro" class="alert alert-danger mt-3">
+    Ocorreu um erro ao tentar realizar o cadastro. Tente novamente.
+  </div>
+</div>

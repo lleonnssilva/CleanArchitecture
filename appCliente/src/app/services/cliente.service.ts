@@ -20,21 +20,23 @@ export class ClienteService {
 
   // Método para criar um novo cliente
   createCliente(cliente: any): Observable<any> {
+    console.log('createCliente',cliente);
+    cliente.id="d078d330-c154-49a9-a6a1-10d2a80b7762";
     return this.http.post<any>(this.apiUrl, cliente);
   }
 
   // Método para atualizar um cliente
-  updateCliente(clienteId: number, cliente: any): Observable<any> {
+  updateCliente(clienteId: string, cliente: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${clienteId}`, cliente);
   }
 
   // Método para excluir um cliente
-  deleteCliente(clienteId: number): Observable<any> {
+  deleteCliente(clienteId: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${clienteId}`);
   }
 
   // Método para obter um cliente específico pelo ID
-  getClienteById(clienteId: number): Observable<any> {
+  getClienteById(clienteId: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${clienteId}`);
   }
 }
