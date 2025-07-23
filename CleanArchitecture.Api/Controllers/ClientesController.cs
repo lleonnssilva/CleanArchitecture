@@ -1,5 +1,6 @@
 ﻿using CleanArchitecture.Application.DTOS.Cliente;
 using CleanArchitecture.Application.Interfaces;
+using CleanArchitecture.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,25 +39,31 @@ namespace CleanArchitecture.Api.Controllers
             return Ok(cliente);
         }
 
-        //[ServiceFilter(typeof(CustomAuthorizeFilter))] // Aplica o filtro personalizado
         [HttpPost]
         public async Task<IActionResult> AddAsync(ClienteDTO cliente)
         {
+            try
+            {
+                cliente.Id = Guid.NewGuid();
+                if (cliente == null)
+                    return BadRequest();
+
+                await _clienteService.AddAsync(cliente);
 
 
-            cliente.Id = Guid.NewGuid();
-            if (cliente == null)
-                return BadRequest();
-
-            await _clienteService.AddAsync(cliente);
-
-
-
-            return Created("Sucesso", null);
+                return Created("Sucesso", null);
+            }
+            catch (DomainValidationException ex)
+            {
+                return StatusCode(ex.StatusCode, new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor.", details = ex.Message });
+            }
 
         }
 
-        //[ServiceFilter(typeof(CustomAuthorizeFilter))] // Aplica o filtro personalizado
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
@@ -67,15 +74,26 @@ namespace CleanArchitecture.Api.Controllers
             return NoContent();
         }
 
-        //[ServiceFilter(typeof(CustomAuthorizeFilter))] // Aplica o filtro personalizado
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateAsync(Guid id, ClienteDTO cliente)
         {
-            if (id == Guid.Empty || cliente == null || id != cliente.Id)
-                return BadRequest();
+            try
+            {
+                if (id == Guid.Empty || cliente == null || id != cliente.Id)
+                    return BadRequest();
 
-            await _clienteService.UpdateAsync(cliente);
-            return NoContent();
+                await _clienteService.UpdateAsync(cliente);
+                return NoContent();
+            }
+
+            catch (DomainValidationException ex)
+            {
+                return StatusCode(ex.StatusCode, new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor.", details = ex.Message });
+            }
         }
     }
 }

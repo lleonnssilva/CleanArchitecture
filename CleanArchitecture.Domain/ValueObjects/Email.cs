@@ -1,4 +1,4 @@
-﻿using CleanArchitecture.Domain.Validations;
+﻿using CleanArchitecture.Domain.Exceptions;
 using System.Text.RegularExpressions;
 
 namespace CleanArchitecture.Domain.ValueObjects
@@ -16,16 +16,16 @@ namespace CleanArchitecture.Domain.ValueObjects
 
         private void Validate(string endereco)
         {
-            DomainValidation.When(string.IsNullOrEmpty(endereco),
-               "Email inválido. Email é obrigatório.");
+           if(string.IsNullOrEmpty(endereco))
+               throw new DomainValidationException("Email inválido. Email é obrigatório.");
 
 
             string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
             Regex regex = new Regex(pattern);
 
             var  emailValid = regex.IsMatch(endereco);
-            DomainValidation.When(!emailValid,
-                "Nome inválido. Informe um email válido.");
+           if(!emailValid)
+                throw new DomainValidationException("Nome inválido. Informe um email válido.");
 
 
         }

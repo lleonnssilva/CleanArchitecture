@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Serilog;
 using Microsoft.Extensions.Options;
+using CleanArchitecture.Api.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
@@ -108,6 +109,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors("AllowAllOrigins");
+//app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 
 app.Run();

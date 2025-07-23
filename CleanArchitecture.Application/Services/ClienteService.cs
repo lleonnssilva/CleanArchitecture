@@ -6,7 +6,6 @@ using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Events;
 using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.Domain.Interfaces.Repositories;
-using CleanArchitecture.Domain.Validations;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
@@ -52,7 +51,9 @@ namespace CleanArchitecture.Application.Services
         {
             try
             {
+               
                 var clienteMap = _mapper.Map<Cliente>(cliente);
+
                 await _repository.AddAsync(clienteMap);
                 _logService.LogInfo($"Cliente com ID - {cliente.Id} adicionado em DB");
 
@@ -61,15 +62,16 @@ namespace CleanArchitecture.Application.Services
                 await AddCache(cliente, clienteMap);
 
             }
-            catch (DomainValidation ex)
+            catch (DomainValidationException  ex)
             {
-                _logService.LogError($"Erro ao adicionar cliente: {ex.Message}", null);
-                throw new DomainException($"Erro ao adicionar cliente: {ex.Message}", 400);
+                _logService.LogError($"Erro de validação ao adicionar cliente: {ex.Message}", ex);
+                throw new DomainValidationException($"Erro de validação: {ex.Message}",400);
+  
             }
             catch (Exception ex)
             {
-                _logService.LogError($"Ocorreu um erro inesperado.: {ex.Message}", null);
-                throw new Exception($"Ocorreu um erro inesperado.: {ex.Message}", ex);
+                _logService.LogError($"Erro inesperado ao adicionar cliente: {ex.Message}", ex);
+                throw new Exception($"Erro inesperado: {ex.Message}", ex);
             }
 
         }
@@ -92,17 +94,32 @@ namespace CleanArchitecture.Application.Services
 
         public async Task UpdateAsync(ClienteDTO cliente)
         {
-            var clienteMap = _mapper.Map<Cliente>(cliente);
-            await _repository.UpdateAsync(clienteMap);
-            _logService.LogInfo($"Cliente com ID - {clienteMap.Id} atualizado em DB");
-
-            var clienteCache = await _redis.GetStringAsync($"{clienteMap.Id}");
-            _logService.LogInfo($"Buscando o cliente com ID - {clienteMap.Id} em Cache para atualizar");
-
-            if (clienteCache is not null)
+            try
             {
-                await _redis.RemoveAsync($"{clienteMap.Id}");
-                _logService.LogInfo($"Cliente com ID - {clienteMap.Id} atualizao em Cache");
+                var clienteMap = _mapper.Map<Cliente>(cliente);
+                await _repository.UpdateAsync(clienteMap);
+                _logService.LogInfo($"Cliente com ID - {clienteMap.Id} atualizado em DB");
+
+                var clienteCache = await _redis.GetStringAsync($"{clienteMap.Id}");
+                _logService.LogInfo($"Buscando o cliente com ID - {clienteMap.Id} em Cache para atualizar");
+
+                if (clienteCache is not null)
+                {
+                    await _redis.RemoveAsync($"{clienteMap.Id}");
+                    _logService.LogInfo($"Cliente com ID - {clienteMap.Id} atualizao em Cache");
+                }
+
+            }
+            catch (DomainValidationException ex)
+            {
+                _logService.LogError($"Erro de validação ao adicionar cliente: {ex.Message}", ex);
+                throw new DomainValidationException($"Erro de validação: {ex.Message}", 400);
+
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError($"Erro inesperado ao adicionar cliente: {ex.Message}", ex);
+                throw new Exception($"Erro inesperado: {ex.Message}", ex);
             }
 
         }

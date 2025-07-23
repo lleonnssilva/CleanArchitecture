@@ -61,7 +61,7 @@ describe('CadastroComponent', () => {
     clienteServiceMock.createCliente.and.returnValue(of({ success: true }));
 
     // Chamando o método onSubmit()
-    component.onSubmit();
+    component.cadastrarCliente();
 
     expect(clienteServiceMock.createCliente).toHaveBeenCalledWith(clienteMock);
     expect(routerMock.navigate).toHaveBeenCalledWith(['/pesquisa-cliente']);
@@ -76,7 +76,7 @@ describe('CadastroComponent', () => {
     clienteServiceMock.createCliente.and.returnValue(throwError('Erro ao cadastrar cliente'));
 
     // Chamando o método onSubmit()
-    component.onSubmit();
+    component.cadastrarCliente();
 
     // A função deve ser chamada, mas o erro não deve impedir o fluxo.
     expect(clienteServiceMock.createCliente).toHaveBeenCalledWith(clienteMock);
@@ -93,7 +93,7 @@ describe('CadastroComponent', () => {
 
     expect(component.clienteForm.valid).toBeTrue();
 
-    const submitSpy = spyOn(component, 'onSubmit');
+    const submitSpy = spyOn(component, 'cadastrarCliente');
 
     // Chamando o método cadastrarCliente que verifica a validade do formulário
     component.cadastrarCliente();

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Cliente } from '../../../model/cliente';
 import { ClienteService } from '../../../services/cliente.service';
 import { cepValidator } from '../../validators/cepVlidator';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-atualizar-cliente',
@@ -108,9 +109,10 @@ atualizarCliente(): void {
         this.erroDeAtualizacao = false;
         this.router.navigate(['/pesquisa-cliente']);
       },
-      (error) => {
-        this.erroDeAtualizacao = true;
-        console.error('Erro ao atualizar cliente:', error);
+       (error: HttpErrorResponse) => {
+              this.erroDeAtualizacao=true;
+              this.erro = error.error.message;
+               console.error('Erro na atualização:', error.error.message);
       }
     );
   } else {

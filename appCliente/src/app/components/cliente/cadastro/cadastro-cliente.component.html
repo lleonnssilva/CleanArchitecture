@@ -3,20 +3,14 @@
   <h2>Cadastrar Cliente</h2>
 
   <!-- Error message -->
-  <div *ngIf="erro" class="alert alert-danger">
-    {{ erro }}
-  </div>
 
   <!-- Success message -->
-  <div *ngIf="sucesso" class="alert alert-success">
-    Cliente cadstrado com sucesso! Redirecionando...
-  </div>
+
   <form [formGroup]="clienteForm" (ngSubmit)="cadastrarCliente()">
     <div class="form-group">
       <label for="id">Id:</label>
       <input
         id="id"
-        readonly="readonly"
         type="text"
         class="form-control"
         formControlName="id"
@@ -187,4 +181,11 @@
      <br>
     <!-- <button type="button" class="btn btn-secondary ml-2" (click)="router.navigate(['/clientes'])">Cancelar</button> -->
   </form>
+   <div *ngIf="erroCadastro" class="alert alert-danger mt-3">
+    Ocorreu um erro ao tentar realizar o cadastro. Tente novamente.
+  </div>
+    <div *ngIf="erro" class="alert alert-danger">
+    {{ erro }}
+  </div>
+
  </div>

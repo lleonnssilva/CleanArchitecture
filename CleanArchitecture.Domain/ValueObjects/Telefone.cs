@@ -1,4 +1,4 @@
-﻿using CleanArchitecture.Domain.Validations;
+﻿using CleanArchitecture.Domain.Exceptions;
 
 namespace CleanArchitecture.Domain.ValueObjects
 {
@@ -18,11 +18,11 @@ namespace CleanArchitecture.Domain.ValueObjects
         private void Validate(string ddd,string telefone)
         {
 
-            DomainValidation.When(string.IsNullOrEmpty(ddd),
-               "DDD invalido. DDD é obrigatório.");
+            if(string.IsNullOrEmpty(ddd))
+                throw new DomainValidationException("DDD invalido. DDD é obrigatório.");
 
-            DomainValidation.When(string.IsNullOrEmpty(ddd),
-               "Telefone invalido. Telefone é obrigatório.");
+            if(string.IsNullOrEmpty(ddd))
+               throw new DomainValidationException("Telefone invalido. Telefone é obrigatório.");
         }
     }
 }

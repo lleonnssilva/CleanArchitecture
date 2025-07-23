@@ -1,4 +1,4 @@
-﻿using CleanArchitecture.Domain.Validations;
+﻿using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.Domain.ValueObjects;
 
 namespace CleanArchitecture.Domain.Entities
@@ -26,14 +26,13 @@ namespace CleanArchitecture.Domain.Entities
         }
         private void Validate(string nome)
         {
-            DomainValidation.When(string.IsNullOrEmpty(nome),
-                "Nome inválido. Nome é obrigatório.");
+            if(string.IsNullOrEmpty(nome))
+                throw new DomainValidationException("Nome inválido. Nome é obrigatório.");
+            if (nome.Length < 5)
+                throw new DomainValidationException("Nome inválido. Nome precisa ter pelo menos 5 caracteres.");
 
-            DomainValidation.When(nome.Length < 5,
-                "Nome inválido. Nome precisa ter pelo menos 5 caracteres.");
-
-            DomainValidation.When(nome.Length > 200,
-               "Nome inválido. Nome pode ter no máximo 200 caracteres.");
+            if(nome.Length > 200)
+               throw new DomainValidationException("Nome inválido. Nome pode ter no máximo 200 caracteres.");
 
         }
 

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ClienteService } from '../../../services/cliente.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { cepValidator } from '../../validators/cepVlidator';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -12,7 +13,7 @@ import { cepValidator } from '../../validators/cepVlidator';
 export class CadastroClienteComponent {
   clienteForm: FormGroup;
   erro: string = '';
-  sucesso: boolean = false;
+  erroCadastro: boolean = false; 
   constructor(private fb: FormBuilder,private clienteService: ClienteService, private router: Router,) {
 
       this.clienteForm = this.fb.group({
@@ -41,15 +42,18 @@ export class CadastroClienteComponent {
     if (this.clienteForm.valid) {
       // Lógica para cadastro (por exemplo, chamar um serviço)
       console.log(this.clienteForm.value);
+       this.erroCadastro = false;
       this.clienteService.createCliente(this.clienteForm.value).subscribe(
       (response) => {
         console.log('Cliente cadastrado com sucesso!', response);
-          this.sucesso = true;
+          this.erroCadastro = false;
         // Redireciona para a página de pesquisa de clientes após cadastro
         this.router.navigate(['/pesquisa-cliente']);
       },
-      (error) => {
-        console.error('Erro ao cadastrar cliente:', error);
+      (error: HttpErrorResponse) => {
+        this.erroCadastro=true;
+        this.erro = error.error.message;
+         console.error('Erro no cadastro:', error.error.message);
       }
     );
     }

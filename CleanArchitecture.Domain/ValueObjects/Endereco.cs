@@ -1,4 +1,4 @@
-﻿using CleanArchitecture.Domain.Validations;
+﻿using CleanArchitecture.Domain.Exceptions;
 using System.Text.RegularExpressions;
 
 namespace CleanArchitecture.Domain.ValueObjects
@@ -14,7 +14,7 @@ namespace CleanArchitecture.Domain.ValueObjects
         protected Endereco() { }
         public Endereco(string rua, string bairro, string cidade, string numero, string estado, string cep)
         {
-            Validate(rua,bairro,cidade,numero,estado,cep);
+            Validate(rua, bairro, cidade, numero, estado, cep);
             Rua = rua;
             Bairro = bairro;
             Cidade = cidade;
@@ -25,30 +25,27 @@ namespace CleanArchitecture.Domain.ValueObjects
         }
         private void Validate(string rua, string bairro, string cidade, string numero, string estado, string cep)
         {
-            DomainValidation.When(string.IsNullOrEmpty(rua),
-               "Rua invalida. Rua é obrigatório.");
+            if (string.IsNullOrEmpty(rua))
+                throw new DomainValidationException("Rua invalida. Rua é obrigatório.");
 
-            DomainValidation.When(string.IsNullOrEmpty(bairro),
-              "Bairro invalido. Bairro é obrigatório.");
+            if (string.IsNullOrEmpty(bairro))
+                throw new DomainValidationException("Bairro invalido. Bairro é obrigatório.");
 
-            DomainValidation.When(string.IsNullOrEmpty(cidade),
-              "Cidade invalida. Cidade é obrigatório.");
+            if (string.IsNullOrEmpty(cidade))
+                throw new DomainValidationException("Cidade invalida. Cidade é obrigatório.");
 
-            DomainValidation.When(string.IsNullOrEmpty(numero),
-              "Número invalido. Número é obrigatório.");
+            if (string.IsNullOrEmpty(numero))
+                throw new DomainValidationException("Número invalido. Número é obrigatório.");
 
-            DomainValidation.When(string.IsNullOrEmpty(estado),
-              "Estado invalido. Estado é obrigatório.");
-
-            DomainValidation.When(string.IsNullOrEmpty(cep),
-              "Cep invalido. Cep é obrigatório.");
+            if (string.IsNullOrEmpty(estado))
+                throw new DomainValidationException("Estado invalido. Estado é obrigatório.");
 
             string pattern = @"^\d{5}-\d{3}$";
             Regex regex = new Regex(pattern);
-            var cepValido= regex.IsMatch(cep);
+            var cepValido = regex.IsMatch(cep);
 
-            DomainValidation.When(!cepValido,
-              "Cep invalido. Cep é inválido.");
+            if (string.IsNullOrEmpty(cep) || cep.ToString().Length != 9 || !cepValido)  // Exemplo: "12345-678"
+                throw new DomainValidationException("Cep inválido. O CEP precisa ter o formato correto.");
 
         }
     }
