@@ -45,17 +45,5 @@ namespace CleanArchitecture.Domain.Entities
         {
             return this.Telefone.DDD.ToString() + this.Telefone.NumeroTelefone.ToString();
         }
-        public string GetEnderecoFormatado()
-        {
-            var endereco = String.Format("Logradouro:{0}\nBairro: {1}\nNúmero: {2}\nCidade: {3}\nMunicipio: {4}\nEstado: {5}",
-                this.Endereco.Rua.ToString(),
-                this.Endereco.Bairro.ToString(),
-                this.Endereco.Numero.ToString(),
-                this.Endereco.Cidade.ToString(),
-                this.Endereco.Estado.ToString(),
-                this.Endereco.Cep.ToString());
-            return endereco;
-        }
-
     }
 }

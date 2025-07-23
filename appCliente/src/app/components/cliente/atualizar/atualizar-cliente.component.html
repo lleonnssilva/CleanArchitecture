@@ -1,10 +1,7 @@
 <div class="container">
   <h2>Atualizar Cliente</h2>
 
-  <!-- Mensagem de erro -->
-  <div *ngIf="erro" class="alert alert-danger">
-    {{ erro }}
-  </div>
+
 
   <!-- Mensagem de sucesso -->
   <div *ngIf="sucesso" class="alert alert-success">
@@ -190,4 +187,8 @@
     <!-- Botão de cancelar -->
     <!-- <button type="button" class="btn btn-secondary ml-2" (click)="router.navigate(['/clientes'])">Cancelar</button> -->
   </form>
+    <!-- Mensagem de erro -->
+  <div *ngIf="erro" class="alert alert-danger">
+    {{ erro }}
+  </div>
 </div>

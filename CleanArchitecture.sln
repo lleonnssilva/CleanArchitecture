@@ -39,8 +39,9 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "appCliente", "appCliente\",
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "63724"
-		SlnRelativePath = "appCliente\"
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Testes", "CleanArchitecture.Testes\CleanArchitecture.Testes.csproj", "{75FF02F6-2D6D-477F-A76E-10FE691C94B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +73,10 @@ Global
 		{AA10862B-E52E-B414-933D-E37A30DC92C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA10862B-E52E-B414-933D-E37A30DC92C8}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{AA10862B-E52E-B414-933D-E37A30DC92C8}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{75FF02F6-2D6D-477F-A76E-10FE691C94B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75FF02F6-2D6D-477F-A76E-10FE691C94B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75FF02F6-2D6D-477F-A76E-10FE691C94B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75FF02F6-2D6D-477F-A76E-10FE691C94B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +88,7 @@ Global
 		{A916F323-32AF-5A35-9C2B-B5A43D4F43F4} = {503B382A-52A6-4983-9F97-7A25025FA060}
 		{75A1F486-1970-4225-A927-224C1BB76B85} = {503B382A-52A6-4983-9F97-7A25025FA060}
 		{AA10862B-E52E-B414-933D-E37A30DC92C8} = {503B382A-52A6-4983-9F97-7A25025FA060}
+		{75FF02F6-2D6D-477F-A76E-10FE691C94B1} = {503B382A-52A6-4983-9F97-7A25025FA060}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D316BDB2-315D-480E-817E-9E80CD3E4DC0}
