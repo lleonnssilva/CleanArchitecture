@@ -64,6 +64,7 @@
           id="ddd"
           type="text"
           class="form-control"
+          (input)="validateDDD($event)"
           formControlName="ddd"
           maxlength="2"
           [ngClass]="{ 'is-invalid': clienteForm.get('telefone.ddd')?.invalid && clienteForm.get('telefone.ddd')?.touched }"
@@ -72,6 +73,7 @@
           id="numeroTelefone"
           type="text"
           maxlength="9"
+          (input)="aplicarMaskTelefone($event)" 
           class="form-control ml-2"
           formControlName="numeroTelefone"
           [ngClass]="{ 'is-invalid': clienteForm.get('telefone.numeroTelefone')?.invalid && clienteForm.get('telefone.numeroTelefone')?.touched }"
@@ -157,6 +159,7 @@
           type="text"
           maxlength="2"
           class="form-control"
+           (input)="apenasLetras($event)"
           formControlName="estado"
           [ngClass]="{ 'is-invalid': clienteForm.get('endereco.estado')?.invalid && clienteForm.get('endereco.estado')?.touched }"
         />
@@ -174,6 +177,7 @@
           maxlength="9"
           class="form-control"
           formControlName="cep"
+          (input)="aplicarMaskCep($event)" 
           [ngClass]="{ 'is-invalid': clienteForm.get('endereco.cep')?.invalid && clienteForm.get('endereco.cep')?.touched }"
         />
        <div *ngIf="clienteForm.get('endereco.cep')?.invalid && clienteForm.get('endereco.cep')?.touched" class="invalid-feedback">

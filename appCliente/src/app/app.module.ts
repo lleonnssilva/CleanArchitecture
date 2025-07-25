@@ -12,6 +12,7 @@ import { HomeComponent } from './components/home/home.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,14 +21,14 @@ import { LoginComponent } from './components/login/login.component';
     PesquisaClienteComponent,
     AtualizarClienteComponent,
     HomeComponent,
-    RegisterComponent
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule ,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
    providers: [
     {

@@ -1,5 +1,7 @@
 ﻿using CleanArchitecture.Domain.Exceptions;
+using Microsoft.AspNetCore.Http;
 using System.Net;
+using System.Text.Json;
 
 public class ExceptionMiddleware
 {
@@ -12,41 +14,29 @@ public class ExceptionMiddleware
         _logger = logger;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext)
+    public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            await _next(httpContext);
+            await _next(context);
+        }
+        catch (DomainValidationException ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            //return StatusCode(ex.StatusCode, new { message = ex.Message });
+            await context.Response.WriteAsJsonAsync(new { message = ex.Message, StatusCode = StatusCodes.Status400BadRequest });
         }
         catch (Exception ex)
         {
-            await HandleExceptionAsync(httpContext, ex);
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            var response = new
+            {
+                StatusCode = context.Response.StatusCode,
+                Message = ex.Message,
+            };
+            await context.Response.WriteAsJsonAsync(JsonSerializer.Serialize(response));
         }
-    }
-
-    private Task HandleExceptionAsync(HttpContext context, Exception exception)
-    {
-        context.Response.ContentType = "application/json";
-
-        // Logando o erro para análise futura
-        _logger.LogError(exception, "Ocorreu uma exceção inesperada.");
-
-        // Definir o status code com base no tipo de exceção
-        context.Response.StatusCode = exception switch
-        {
-            DomainValidationException => (int)HttpStatusCode.BadRequest,
-            _ => (int)HttpStatusCode.InternalServerError
-        };
-
-        // Resposta personalizada
-        var response = new
-        {
-            message = exception.Message,
-            exceptionType = exception.GetType().Name,
-            details = exception.StackTrace // Evite enviar isso em produção para não expor detalhes sensíveis
-        };
-
-        // Retorna a resposta JSON
-        return context.Response.WriteAsJsonAsync(response);
     }
 }

@@ -18,6 +18,11 @@ export class AtualizarClienteComponent implements OnInit {
   erro: string = '';
   sucesso: boolean = false;
   erroDeAtualizacao: boolean = false;
+  maskCepValue:string='';
+  maskTelefoneValue:string='';
+  dddValue:string='';
+  inputValue:string=''
+  private data: Cliente[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -119,4 +124,49 @@ atualizarCliente(): void {
     this.erro = 'Por favor, preencha os campos corretamente.';
   }
 }
+
+ aplicarMaskCep(event: any): void {
+    let value = event.target.value.replace(/\D/g, ''); // Remove tudo o que não for número
+    if (value.length > 5) {
+      value = value.slice(0, 5) + '-' + value.slice(5, 8); // Formata o valor como xxxxx-xxx
+    }
+    this.maskCepValue = value; // Atribui o valor formatado à variável
+    event.target.value = value; // Atualiza o valor no input
+  }
+ aplicarMaskTelefone(event: any): void {
+    let value = event.target.value.replace(/\D/g, ''); // Remove tudo o que não for número
+    if (value.length > 9) {
+      value = value.slice(0, 9); // Limita a 9 dígitos
+    }
+    this.maskTelefoneValue = value; // Atualiza a variável
+    event.target.value = value; // Atualiza o campo de input
+  }
+   validDDDs: string[] = [
+    '11', '21', '31', '41', '51', '61', '71', '81', '91', // São Paulo, Rio de Janeiro, etc.
+    '62', '63', '64', '65', '66', '67', '68', '69', '71'   // Exemplos de DDDs adicionais
+  ];
+
+  // Método para validar DDD
+  validateDDD(event: any): void {
+    let value = event.target.value.replace(/\D/g, ''); // Remove qualquer coisa que não for número
+    if (value.length > 2) {
+      value = value.slice(0, 2); // Limita a entrada a dois caracteres
+    }
+    
+    // Verifica se o DDD é válido
+    if (this.validDDDs.includes(value)) {
+      event.target.style.borderColor = 'green'; // Se for válido, borda verde
+    } else if (value.length === 2) {
+      event.target.style.borderColor = 'red'; // Se for inválido, borda vermelha
+    }
+
+    this.dddValue = value; // Atualiza a variável
+    event.target.value = value; // Atualiza o valor no campo
+  }
+  apenasLetras(event: any): void {
+    // Remove tudo o que não for uma letra
+    let value = event.target.value.replace(/[^a-zA-Z]/g, ''); // Expressão regular para remover qualquer coisa que não seja letra
+    this.inputValue = value; // Atualiza a variável
+    event.target.value = value; // Atualiza o valor no campo de input
+  }
 }

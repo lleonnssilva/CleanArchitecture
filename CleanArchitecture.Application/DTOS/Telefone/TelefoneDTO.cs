@@ -2,7 +2,7 @@
 {
     public class TelefoneDTO
     {
-        public string DDD { get; set; }
-        public string NumeroTelefone { get; set; }
+        public int DDD { get; set; }
+        public int NumeroTelefone { get; set; }
     }
 }

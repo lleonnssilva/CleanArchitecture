@@ -49,8 +49,7 @@ namespace CleanArchitecture.Application.Services
 
         public async Task AddAsync(ClienteDTO cliente)
         {
-            try
-            {
+            
                
                 var clienteMap = _mapper.Map<Cliente>(cliente);
 
@@ -61,18 +60,7 @@ namespace CleanArchitecture.Application.Services
 
                 await AddCache(cliente, clienteMap);
 
-            }
-            catch (DomainValidationException  ex)
-            {
-                _logService.LogError($"Erro de validação ao adicionar cliente: {ex.Message}", ex);
-                throw new DomainValidationException($"Erro de validação: {ex.Message}",400);
-  
-            }
-            catch (Exception ex)
-            {
-                _logService.LogError($"Erro inesperado ao adicionar cliente: {ex.Message}", ex);
-                throw new Exception($"Erro inesperado: {ex.Message}", ex);
-            }
+          
 
         }
 
@@ -94,8 +82,7 @@ namespace CleanArchitecture.Application.Services
 
         public async Task UpdateAsync(ClienteDTO cliente)
         {
-            try
-            {
+           
                 var clienteMap = _mapper.Map<Cliente>(cliente);
                 await _repository.UpdateAsync(clienteMap);
                 _logService.LogInfo($"Cliente com ID - {clienteMap.Id} atualizado em DB");
@@ -109,18 +96,7 @@ namespace CleanArchitecture.Application.Services
                     _logService.LogInfo($"Cliente com ID - {clienteMap.Id} atualizao em Cache");
                 }
 
-            }
-            catch (DomainValidationException ex)
-            {
-                _logService.LogError($"Erro de validação ao adicionar cliente: {ex.Message}", ex);
-                throw new DomainValidationException($"Erro de validação: {ex.Message}", 400);
-
-            }
-            catch (Exception ex)
-            {
-                _logService.LogError($"Erro inesperado ao adicionar cliente: {ex.Message}", ex);
-                throw new Exception($"Erro inesperado: {ex.Message}", ex);
-            }
+           
 
         }
 

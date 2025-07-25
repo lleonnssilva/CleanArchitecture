@@ -12,7 +12,7 @@ namespace CleanArchitecture.Testes.Domain
         public void Cliente_DeveLancarExcecao_QuandoNomeInvalido()
         {
             // Arrange
-            var telefone = new Telefone("11", "123456789");
+            var telefone = new Telefone(11, 123456789);
             var email = new Email("cliente@dominio.com");
             var endereco = new Endereco("Rua X", "Bairro Y", "100", "Cidade Z", "Estado W", "12345-678");
 
@@ -26,7 +26,7 @@ namespace CleanArchitecture.Testes.Domain
         public void Cliente_DeveCriarCorretamente_QuandoDadosValidos()
         {
             // Arrange
-            var telefone = new Telefone("11", "987654321");
+            var telefone = new Telefone(11, 987654321);
             var email = new Email("cliente@dominio.com");
             var endereco = new Endereco("Rua X", "Bairro Y", "100", "Cidade Z", "Estado W", "12345-678");
 
@@ -44,7 +44,7 @@ namespace CleanArchitecture.Testes.Domain
         public void Cliente_DeveRetornarTelefoneCorretamente()
         {
             // Arrange
-            var telefone = new Telefone("11", "987654321");
+            var telefone = new Telefone(11, 987654321);
             var email = new Email("cliente@dominio.com");
             var endereco = new Endereco("Rua X", "Bairro Y", "100", "Cidade Z", "Estado W", "12345-678");
             var cliente = new Cliente("João da Silva", telefone, email, endereco);
@@ -60,7 +60,7 @@ namespace CleanArchitecture.Testes.Domain
         public void Cliente_DeveRetornarEmailCorretamente()
         {
             // Arrange
-            var telefone = new Telefone("11", "987654321");
+            var telefone = new Telefone(11, 987654321);
             var email = new Email("cliente@dominio.com");
             var endereco = new Endereco("Rua X", "Bairro Y", "100", "Cidade Z", "Estado W", "12345-678");
             var cliente = new Cliente("João da Silva", telefone, email, endereco);

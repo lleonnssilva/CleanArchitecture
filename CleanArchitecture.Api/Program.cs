@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using CleanArchitecture.Api.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
+
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information() // Defina o nível mínimo de log
     .WriteTo.File("Log\\log.txt", rollingInterval: RollingInterval.Day)
@@ -33,7 +34,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "apiagenda", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "api clientes", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
@@ -70,30 +71,16 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
-});
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("AllowSpecificOrigin",
-//        builder => builder.WithOrigins("http://localhost:59052")
-//                          .AllowAnyHeader()
-//                          .AllowAnyMethod());
-//});
-builder.Services.AddCors(options =>
-{
     options.AddPolicy("AllowAllOrigins", policy =>
     {
-        policy.AllowAnyOrigin()  // Permite todas as origens (atenção para isso em produção)
+        policy.AllowAnyOrigin()
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -105,11 +92,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors("AllowAllOrigins");
-//app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 
 app.Run();

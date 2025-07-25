@@ -1,6 +1,5 @@
 ﻿using CleanArchitecture.Application.DTOS.Cliente;
 using CleanArchitecture.Application.Interfaces;
-using CleanArchitecture.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +22,6 @@ namespace CleanArchitecture.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllsync()
         {
-            var user = User.Identity.IsAuthenticated;
             var clientes = await _clienteService.GetAllsync();
             return Ok(clientes);
         }
@@ -42,25 +40,14 @@ namespace CleanArchitecture.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAsync(ClienteDTO cliente)
         {
-            try
-            {
-                cliente.Id = Guid.NewGuid();
-                if (cliente == null)
-                    return BadRequest();
 
-                await _clienteService.AddAsync(cliente);
+            cliente.Id = Guid.NewGuid();
+            if (cliente == null)
+                return BadRequest();
 
+            await _clienteService.AddAsync(cliente);
 
-                return Created("Sucesso", null);
-            }
-            catch (DomainValidationException ex)
-            {
-                return StatusCode(ex.StatusCode, new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Erro interno no servidor.", details = ex.Message });
-            }
+            return Created("Sucesso", null);
 
         }
 
@@ -77,23 +64,13 @@ namespace CleanArchitecture.Api.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateAsync(Guid id, ClienteDTO cliente)
         {
-            try
-            {
-                if (id == Guid.Empty || cliente == null || id != cliente.Id)
-                    return BadRequest();
 
-                await _clienteService.UpdateAsync(cliente);
-                return NoContent();
-            }
+            if (id == Guid.Empty || cliente == null || id != cliente.Id)
+                return BadRequest();
 
-            catch (DomainValidationException ex)
-            {
-                return StatusCode(ex.StatusCode, new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Erro interno no servidor.", details = ex.Message });
-            }
+            await _clienteService.UpdateAsync(cliente);
+            return NoContent();
+
         }
     }
 }

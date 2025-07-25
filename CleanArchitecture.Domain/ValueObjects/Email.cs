@@ -25,7 +25,7 @@ namespace CleanArchitecture.Domain.ValueObjects
 
             var  emailValid = regex.IsMatch(endereco);
            if(!emailValid)
-                throw new DomainValidationException("Nome inválido. Informe um email válido.");
+                throw new DomainValidationException("Email inválido. Informe um email válido.");
 
 
         }
